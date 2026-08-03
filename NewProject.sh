@@ -13,8 +13,8 @@ PROYECTO="$2"
 TARGET_DIR="$CATEGORIA/$PROYECTO"
 
 # 2. Comprobar que existe la plantilla base
-if [ ! -d "000Base" ]; then
-    echo "❌ Error: No se encuentra la carpeta '000Base' en la raíz."
+if [ ! -d "0Base" ]; then
+    echo "❌ Error: No se encuentra la carpeta '0Base' en la raíz."
     exit 1
 fi
 
@@ -26,9 +26,9 @@ fi
 
 echo "🚀 Creando nuevo proyecto '$PROYECTO' en '$CATEGORIA'..."
 
-# Paso 1: Copiar la estructura de 000Base al nuevo directorio
+# Paso 1: Copiar la estructura de 0Base al nuevo directorio
 mkdir -p "$CATEGORIA"
-cp -r "000Base" "$TARGET_DIR"
+cp -r "0Base" "$TARGET_DIR"
 
 # Paso 2 y 3: Renombrar e inyectar "program <Proyecto>;" como primera línea
 OLD_PAS="$TARGET_DIR/src/MainProg.pas"
@@ -42,7 +42,7 @@ if [ -f "$OLD_PAS" ]; then
     # Eliminamos la plantilla original ya procesada
     rm "$OLD_PAS"
 else
-    # Por si acaso en 000Base no estuviera el archivo, creamos uno mínimo
+    # Por si acaso en 0Base no estuviera el archivo, creamos uno mínimo
     echo "program $PROYECTO;" > "$NEW_PAS"
 fi
 
@@ -66,7 +66,7 @@ BUILD_SH="$TARGET_DIR/build.sh"
 cat <<EOF > "$BUILD_SH"
 #!/bin/bash
 cd src
-fpc ${PROYECTO}.pas
+fpc @fp.cfg ${PROYECTO}.pas
 cd ..
 EOF
 chmod +x "$BUILD_SH"
@@ -79,19 +79,13 @@ cat <<EOF > "$BUILD_BAT"
 chcp 65001 > nul
 cd src
 echo Compilando ${PROYECTO}...
-fpc ${PROYECTO}.pas
+fpc @fp.cfg ${PROYECTO}.pas
 cd ..
 
 if %ERRORLEVEL% EQU 0 (
   echo.
   echo ¡ÉXITO!
-  if exist bin\\x86_64-win64\\ (
-    explorer bin\\x86_64-win64
-  ) else if exist bin\\i386-win32\\ (
-    explorer bin\\i386-win32
-  ) else if exist bin\\i386-win32\\ (
-    explorer bin\\i386-win32
-  )
+  explorer bin
 ) else (
   echo.
   error ¡FRACASO!

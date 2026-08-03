@@ -1,3 +1,6 @@
 [submodule "CHXPas"]
-	path = CHXPas
+	path = 0Common/CHXPas
 	url = https://github.com/Chixpy/CHXPas.git
+[submodule "0Common/SDL3"]
+	path = 0Common/SDL3
+	url = https://github.com/PascalGameDevelopment/SDL3-for-Pascal.git

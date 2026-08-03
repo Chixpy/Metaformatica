@@ -10,56 +10,50 @@ and other experiments.
 
 ### Folder structure
 
-The basic directory structure is:
+The basic directory structure of Metaformática is:
 
-   Metaformatica/
-     |> README.md: This text.
-     |> LastChanges: Last changes commited to the repository.
-     |> CHANGELOG.md: Full change log.
-     |
-     |> 0Base/: Template program structure (to be copied).
-     |    |> README.md: Information about the program.
-     |    |
-     |    |> bin/: Final program directory.
-     |    |    |> [Architecture]: Actual executable directory
-     |    |    |> [OtherFolderFiles]: Whatever executable needs to run.
-     |    |
-     |    |> lib: Where compiler will put compilation files.
-     |    |
-     |    |> src/: Source directory.
-     |    |    |> [MainProgram].pas: Program(s) for compiling
-     |    |    |> fpc.cfg: FPC config file for easy compiling.
-     |    |    |
-     |    |    |> [Units/Classes]/: Directories with units used by the program.
-     |    |
-     |    |> [res/man/doc]: Recurses/manual/documentation if exists
-     |
-     |
-     |> 0Common/: 
-     |    |> [Units/Classes]/: Common units between programs but not in CHXPas.
-     |    |> CHXPas/: CHXPas units, where cCHXSDL3Engine is.
-     |
-     |
-     |
-     |> [Category]/ Actual programs directory, each in its own folder
+- _README.md_: This text.
+- _LastChanges.md_: Last changes commited to the repository.
+- _CHANGELOG.md_: Full change log.
+- _0Base/_: Template program structure (to be copied).
+  - _README.md_: Information about the program.
+  - _bin/_: Final program directory.
+    - _[Architecture]/_: Actual executable directory (and dll).
+    - _[OtherFolderFiles]_: Whatever executable needs to run.
+  - _lib/_: Where compiler will put compilation files.
+  - _src/_: Source directory.
+    - _[MainProgram].pas_: Program(s) for compiling.
+    - _fpc.cfg_: FPC config file for easy compiling.
+    - _[Units/Classes]/_: Directories with units used by the program.
+  - _[res/man/doc]/_: Recurses/Manual/Documentation if exists.
+- _0Common/_: 
+  - _[Units/Classes]/_: Common units between programs but not in CHXPas.
+  - _CHXPas/_: CHXPas units, where cCHXSDL3Engine is.
+  - _SDL3/_: SDL3-for-Pascal submodule, used by cCHXSDL3Engine.
+- _[Category]/_ Actual programs directory, each in its own folder.
 
-Maybe, someday, all of above is under `Pascal` directory because programs in 
+Maybe, someday, all of above is under _Pascal_ directory because programs in
 other languages are added (although surely I will try to port to Pascal).
 
 ### Compilation
 
-Compiling the programs must be as simple as, in `[MainFile].pas` folder:
+Every project have a _Build.sh/bat_ for easy compilation, but they only does
+in _src_ folder:
 
 ```
-fpc [MainFile].pas
+fpc @fp.cfg [MainFile].pas
 ```
 
-Executable file will be created at `../bin/[Architecture]/` from
-_MainFile.pas_ directory, and it will run from there. In Windows, this
-folder must have _SDL3.dll_ (and other .dll if needed) and be sure that they
-are for the _compiled_ architecture (32/64bits).
+All fpc parameters are in _fp.cfg_.
 
-Not sure if Lazarus
+Executable file will be created at _bin_ directory, and it must run from
+there.
+
+On Windows, _fpc_ compiler program is suposed to be in `PATH` enviroment
+variable and executable's folder must have _SDL3.dll_ (and other .dll if 
+needed) and be sure that they are for the _compiled_ architecture (32/64bits).
+
+If Lazarus is used, maybe it's needed to add units folders to the project.
 
 ## About `cCHXSDL3Engine`
 
@@ -90,4 +84,3 @@ Other classes are developed to help:
   overloads and some useful types.
 
 The engine uses **SDL3-for-FreePascal** project headers.
-
