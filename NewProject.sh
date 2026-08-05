@@ -66,7 +66,7 @@ BUILD_SH="$TARGET_DIR/build.sh"
 cat <<EOF > "$BUILD_SH"
 #!/bin/bash
 cd src
-fpc @fp.cfg ${PROYECTO}.pas
+fpc @fp.cfg ${PROYECTO}.pas \$@
 cd ..
 EOF
 chmod +x "$BUILD_SH"
@@ -79,7 +79,7 @@ cat <<EOF > "$BUILD_BAT"
 chcp 65001 > nul
 cd src
 echo Compilando ${PROYECTO}...
-fpc @fp.cfg ${PROYECTO}.pas
+fpc @fp.cfg ${PROYECTO}.pas %*
 cd ..
 
 if %ERRORLEVEL% EQU 0 (

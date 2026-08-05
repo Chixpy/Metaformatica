@@ -7,13 +7,13 @@ interface
 uses
   CTypes,
   SDL3,
-  ucCHXSDL3Engine, ucCHXSDL3TypeHelpers;
+  ucCHXSDL3Engine, uCHXSDL3TypeHelpers;
 
 type
 
-  { cSDL3Eng }
+  { cMainEng }
 
-  cSDL3Eng = class(cCHXSDL3Engine)
+  cMainEng = class(cCHXSDL3Engine)
   protected
     procedure Setup; override; { It's abstract. }
     procedure Finish; override; { It's abstract. }
@@ -27,29 +27,29 @@ type
   end;
 
 implementation
-{ cSDL3Eng }
-procedure cSDL3Eng.Setup;
+{ cMainEng }
+procedure cMainEng.Setup;
 begin
   ShowFrameRate := True;
 
 end;
 
-procedure cSDL3Eng.Finish;
+procedure cMainEng.Finish;
 begin
 
 end;
 
-procedure cSDL3Eng.Compute(var ExitProg : Boolean);
+procedure cMainEng.Compute(var ExitProg : Boolean);
 begin
 
 end;
 
-procedure cSDL3Eng.Draw;
+procedure cMainEng.Draw;
 begin
 
 end;
 
-procedure cSDL3Eng.HandleEvent(const aEvent : TSDL_Event;
+procedure cMainEng.HandleEvent(const aEvent : TSDL_Event;
 var Handled : Boolean; var ExitProg : Boolean);
 begin
   inherited;
