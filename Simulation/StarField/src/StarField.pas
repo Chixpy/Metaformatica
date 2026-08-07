@@ -1,3 +1,4 @@
+program StarField;
 {<
   See Readme.md
 

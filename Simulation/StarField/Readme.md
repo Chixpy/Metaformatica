@@ -42,3 +42,8 @@ Executable program will be created in _bin_ directory.
 
 ## Sources and more information
 
+- The Coding Train Challenge #001 by Daniel Shiffman: The main inspiration
+  of this whole project.
+  - http://codingtra.in
+  - http://patreon.com/codingtrain
+  - Video implementing a Star Field: https://youtu.be/17WoOqgXsRM

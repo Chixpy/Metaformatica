@@ -15,17 +15,16 @@ type
 
   cMainEng = class(cCHXSDL3Engine)
   protected
-    ShowHelp: Boolean;
-
     procedure Setup; override; { It's abstract. }
     procedure Finish; override; { It's abstract. }
     procedure Compute(var ExitProg : Boolean); override; { It's abstract. }
-    procedure DrawHelp;
     procedure Draw; override; { It's abstract. }
     procedure HandleEvent(const aEvent : TSDL_Event; var Handled : Boolean;
       var ExitProg : Boolean); override; { It's virtual. }
 
-  public
+  protected
+    ShowHelp: Boolean;
+    procedure DrawHelp;
 
 
   end;
@@ -59,15 +58,6 @@ begin
   if ShowHelp then DrawHelp;
 end;
 
-procedure cMainEng.DrawHelp;
-begin
-  Render.SetDrawColor(1, 0, 1, 1);
-  Render.DebugText(4, 10, '[ESC]: Exit');
-  Render.DebugText(4, 20, '[F1]: Toggle this help');
-  Render.DebugText(4, 30, '[F11]: Toggle FPS');
-  Render.DebugText(4, 40, '[F10] / [F12]: Decrease / Increase FPS');
-end;
-
 procedure cMainEng.HandleEvent(const aEvent : TSDL_Event;
 var Handled : Boolean; var ExitProg : Boolean);
 begin
@@ -78,21 +68,29 @@ begin
     SDL_EVENT_KEY_DOWN:
     begin
       case aEvent.key.key of
-        // SDLK_ESC, SDLK_F10, SDLK_F11, SDLK_F12:
-        //   Managed by cCHXSDLRenderer
+        // SDLK_ESC, SDLK_F10, SDLK_F11, SDLK_F12: Managed by cCHXSDLRenderer
         SDLK_F1:
         begin
           ShowHelp := not ShowHelp;
           Handled := True;
         end;
 
-      otherwise // of aEvent.key.key
+      otherwise
         ;
       end;
     end;
-  otherwise // of aEvent.type_
+  otherwise
     ;
   end;
 end;
 
+procedure cMainEng.DrawHelp;
+begin
+  Render.SetDrawColor(1, 0, 1, 1);
+  SDL_RenderDebugText(SDLRenderer, 4, 10, '[ESC]: Exit');
+  SDL_RenderDebugText(SDLRenderer, 4, 20, '[F1]: Toggle this help');
+  SDL_RenderDebugText(SDLRenderer, 4, 30, '[F11]: Toggle FPS');
+  SDL_RenderDebugText(SDLRenderer, 4, 40,
+    '[F10] / [F12]: Decrease / Increase FPS');
+end;
 end.

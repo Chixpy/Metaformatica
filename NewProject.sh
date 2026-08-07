@@ -65,9 +65,19 @@ fi
 BUILD_SH="$TARGET_DIR/build.sh"
 cat <<EOF > "$BUILD_SH"
 #!/bin/bash
+
+pushd "\$(dirname "\$0")" > /dev/null
+
+mkdir -p bin
+mkdir -p lib
+
 cd src
 fpc @fp.cfg ${PROYECTO}.pas \$@
-cd ..
+ERRCOMP=\$?
+
+popd > /dev/null
+
+exit \$ERRCOMP
 EOF
 chmod +x "$BUILD_SH"
 
@@ -76,21 +86,21 @@ BUILD_BAT="$TARGET_DIR/Build.bat"
 cat <<EOF > "$BUILD_BAT"
 #!/bin/bash
 @echo off
+setlocal enabledelayedexpansion
 chcp 65001 > nul
+
+pushd "%~dp0"
+mkdir bin > nul
+mkdir lib > nul
+
 cd src
 echo Compilando ${PROYECTO}...
 fpc @fp.cfg ${PROYECTO}.pas %*
-cd ..
+set "ERRCOMP=!ERRORLEVEL!"
 
-if %ERRORLEVEL% EQU 0 (
-  echo.
-  echo ¡ÉXITO!
-  explorer bin
-) else (
-  echo.
-  error ¡FRACASO!
-  pause
-)
+popd
+
+exit /b %ERRCOMP%
 EOF
 
 echo -e "\e[32m✅ ¡Proyecto '$PROYECTO' creado con éxito!\e[0m"
