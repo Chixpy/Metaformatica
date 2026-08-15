@@ -8,18 +8,18 @@ uses
   SysUtils, CTypes, SDL3, ucMainEng;
 
 var
-  CTCEng: cMainEng;
+  SDLEng: cMainEng;
   ProgName: String;
 
 begin
   ProgName := ExtractFileName(ParamStr(0));
   ChDir(ExtractFilePath(ParamStr(0)));
-  CTCEng := cMainEng.Create(ChangeFileExt(ProgName, ''),
+  SDLEng := cMainEng.Create(ChangeFileExt(ProgName, ''),
     ChangeFileExt(ProgName, '.ini'), True);
   try
-    CTCEng.Run;
+    SDLEng.Run;
   finally
-    CTCEng.Free;
+    SDLEng.Free;
   end;
 end.
 {

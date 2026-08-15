@@ -1,3 +1,9 @@
+## 2026-08-16 01:57
+
+- Ouch, ingnoring _bin_ and _lib_ directories from projects by default.
+  Removing test ones for the first project.
+- Adding the program _StarField_.
+
 ## 2026-08-07 20:16
 
 - Better _Build.bat_ and _build.sh_ created by _NewProject.sh_. Now

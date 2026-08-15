@@ -5,7 +5,7 @@ unit ucMainEng;
 {$mode ObjFPC}{$H+}{$inline ON}
 interface
 uses
-  CTypes,
+  CTypes, SysUtils, Math,
   SDL3,
   ucCHXSDL3Engine, uCHXSDL3TypeHelpers;
 
@@ -36,9 +36,8 @@ implementation
 
 procedure cMainEng.Setup;
 begin
-  ShowFrameRate := True;
-  SDL_SetRenderLogicalPresentation(SDLRenderer, 200, 200,
-    SDL_LOGICAL_PRESENTATION_LETTERBOX);
+  ShowFrameRate := True; ShowHelp := True;
+  Window.SetRenderSize(200, 200, SDL_LOGICAL_PRESENTATION_LETTERBOX);
 
 end;
 
@@ -55,6 +54,7 @@ end;
 procedure cMainEng.Draw;
 begin
   Render.Clear(0, 0, 0);
+  Render.SetDrawColor(1, 1, 1);
 
   if ShowHelp then DrawHelp;
 end;
@@ -62,10 +62,10 @@ end;
 procedure cMainEng.DrawHelp;
 begin
   Render.SetDrawColor(1, 0, 1, 1);
-  Render.DebugText(4, 10, '[ESC]: Exit');
-  Render.DebugText(4, 20, '[F1]: Toggle this help');
-  Render.DebugText(4, 30, '[F11]: Toggle FPS');
-  Render.DebugText(4, 40, '[F10] / [F12]: Decrease / Increase FPS');
+  Render.DebugText(0, 10, '[ESC]: Exit');
+  Render.DebugText(0, 20, '[F1]: Toggle this help');
+  Render.DebugText(0, 30, '[F11]: Toggle FPS');
+  Render.DebugText(0, 40, '[F10] / [F12]: Dec/Inc FPS');
 end;
 
 procedure cMainEng.HandleEvent(const aEvent : TSDL_Event;
@@ -77,17 +77,14 @@ begin
   case aEvent.type_ of
     SDL_EVENT_KEY_DOWN:
     begin
+      Handled := True;
       case aEvent.key.key of
         // SDLK_ESC, SDLK_F10, SDLK_F11, SDLK_F12:
         //   Managed by cCHXSDLRenderer
-        SDLK_F1:
-        begin
-          ShowHelp := not ShowHelp;
-          Handled := True;
-        end;
+        SDLK_F1: ShowHelp := not ShowHelp;
 
       otherwise // of aEvent.key.key
-        ;
+        Handled := False;
       end;
     end;
   otherwise // of aEvent.type_
