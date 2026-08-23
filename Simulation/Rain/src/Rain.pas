@@ -1,3 +1,4 @@
+program Rain;
 {<
   See Readme.md
 

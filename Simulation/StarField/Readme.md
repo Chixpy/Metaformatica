@@ -17,10 +17,15 @@ The simplest way to make 3D perspective with deep sensation is dividing camera
 plane coordinates (in this example `X` and `Y`) by deep coordinate (`Z` here,
 positive is in from of the camera).
 
-> `X' := X / Z`
-> `Y' := Y / Z`
-> ... and both multiplied by a constant wich we can define erroneously as
-> "the size on the screen of 1 unit at 1 unit of distance". It's FOV related.
+```
+X' := X / Z * k;
+Y' := Y / Z * j;
+```
+
+`k` and `j` constants can be define erroneously as "the size on the screen
+of 1 unit at 1 unit of distance (horizontally and vertically)" or
+correctly as Focal Lengths. They are FOV related. If screen pixels are square,
+both are equal and  a value of `Window.RenderWidth` means 90º of FOV.
 
 More advanced methods include perspective correction, aspect ratio (pixel and
 screen ones), rotation and orientation of the camera (to know what is _up_
@@ -29,18 +34,17 @@ and _right_), use a projection plane instead a naked camera, &c.
 As all divisions, we can't divide by 0. In this context, it means that the
 _star_ with `Z = 0` is at the same XY Plane as the camera. It's easy to say
 "ignore it, don't draw" and all _will work_ as expected, although there are
-some quirks (actually with `Z < 1`) if _stars_ have size (or trails).
+some quirks if _stars_ have size (or trails).
 
-After this considerations, don't forgive to translate (0,0) to the center of
-the screen.
+After this, don't forgive to translate (0,0) to the center of the screen.
 
 ### Variants and improvements
 
-Some improved variants can be implemented, all of them add more complexity and
-computations to the base algorithm:
+Some improved variants can be implemented (only some are done), all of
+them add more complexity and computations to the base algorithm:
 
-- **Velocity**: Changing the velocity of camera is the easiest one. if we
-  remove not visible _stars_, going backwards algorithm must be adapted. Or
+- **Velocity**: Changing the velocity of camera is the easiest one. If we
+  remove not visible _stars_, a going backwards algorithm must be adapted. Or
   simply don't let going backwards.
 - **Change direction**: Changing Camera position vertically or horizontally
   (by shifting all _stars_), althought physically possible, maybe is not
@@ -52,16 +56,14 @@ computations to the base algorithm:
     need to know who is closest to the camera. With no-size points it can be
     ignored as they are small it only will last few frames.
 - **Size** (and shape): Define a size of the _stars_ and shape, usually a
-  circle but it can be anything, a geometric star.
+  circle but it can be anything, a geometric star or a cow^2.
   - Giving a size means that _stars_ grow as we aproach them. Overlaping and
-    hidding will be more common. For a correct representation, sort _stars_
+    hidding will be more common. For a correct representation, sorting  _stars_
     by distance is required, then draw from far to near.
-    - With Circle and Rect (and maybe Regular Polygon and ellipse) maybe is
-      easy to optimize by removing _stars_ totally hidded by others. A
-      `QuadTree` can be usefull here too.
-    - Giving another shape, seraching totally hidded _stars_ can be complex.
-  - As we are dividing by `Z`, projected size is smaller if `Z > 1`; actual
-    size if `Z = 1`; and bigger when `Z < 1`.
+    - With Circle, Rect and spherical cows (and maybe Regular Polygon and
+      ellipse too) can be easy to optimize by removing _stars_ totally hidded
+      by others. A _QuadTree_ can be usefull here too.
+    - Giving another shape, searching totally hidded _stars_ can be complex.
   - Testing for _stars_ out of screen must be done with projected shape as a
     whole.
 - **Trails**: Adding trails increases speed sensation.
@@ -81,39 +83,68 @@ computations to the base algorithm:
 
 ## Compiling
 
-From main directory (where _build.sh_ and _build.bat_ are):
+From main directory (where `build.sh` and `Build.ba`_ are):
 
 ### Unix-like:
 
-> ./build.sh
+```
+./build.sh
+```
 
 ### Windows:
 
-Dbl-Click over _build.bat_ or in command line:
+Dbl-Click over `build.bat` or in command line:
 
-> build
+```
+build
+```
 
 On Windows, Free Pascal Compiler program is suposed to be in
 `PATH` enviroment variable and executable's folder must have _SDL3.dll_ (and
-other .dll if needed) and be sure that they are for the compiled
+other _.dll_ if needed) and be sure that they are for the compiled
 architecture (32/64bits).
 
 If Lazarus is used, maybe it's needed to add used units folders to the project.
 
-### Parameters and executable
+### Scripts, Parameters and Executable
 
-FPC parameters can be passed to add or override  _fp.cfg_ ones.
+Both script files simply do the following:
 
-Parameter `-dRELEASE` generates an optimized executable.
+1. Change to script directory.
+2. Create FPC output directories.
+3. Change to `{MainProg}.pas` directory.
+4. Run `fpc @fp.cfg {MainProg}.pas [OtherParameters]`
 
-Executable program will be created in _bin_ directory.
+So,
+
+- FPC parameters can be passed to scripts to add or override _fp.cfg_ ones.
+- Parameter `-dRELEASE` generates a smart linked, stripped and optimized
+  executable. By default, debug one will be created with debug info, error
+  checking fallback and `heaptrc` unit for memory leaks.
+
+Executable program will be created in `bin/` directory. As said in _Compiling_,
+it need _at least_ find `SDL3.{dll|o}`. In Windows, it's not common to have it
+in a system folder so a copy of `SDL3.dll` in the same folder as executable.
+
+Furthermore, executable will change its current directory to the directory
+wherte it resides to search external files if needed (own _SDL3Engine_ config
+file for example).
 
 ## Usage
 
-  - **[F1]**: Shows help text inside of the program (if avaiable).
-  - **[F11]**: Toggle FPS info.
-  - **[F10]** / **[F12]**: Decrease / Increase FPS.
-  - **[ESC]**: Exit the program.
+By default some keys are assigned:
+
+- **[F1]**: Toggle help text inside of the program.
+- **[F11]**: Toggle FPS info.
+- **[F10]** / **[F12]**: Decrease / Increase FPS.
+- **[ESC]**: Exit the program.
+
+In this program:
+
+- **[Q]** / **[A]**: Increase / Decrease speed.
+- **[S]**: Toggle Shape / Point drawing.
+- **[T]**: Toggle Trails drawing.
+- **Arrows**: 
 
 ## Sources and more information
 

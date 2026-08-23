@@ -11,13 +11,28 @@ uses
 var
   SDLEng: cMainEng;
   ProgName: String;
+  IniName: String;
 
 begin
   ProgName := ExtractFileName(ParamStr(0));
+  IniName := ChangeFileExt(ProgName, '.ini');
   ChDir(ExtractFilePath(ParamStr(0)));
-  SDLEng := cMainEng.Create(ChangeFileExt(ProgName, ''),
-    ChangeFileExt(ProgName, '.ini'), True);
+
+  // Seems to be a good practice with SDL3.
+  SDL_SetAppMetadata(PAnsiChar(ProgName), '1.0',
+    PAnsiChar('com.chixpy.' + ProgName));
+  SDL_SetAppMetadataProperty(SDL_PROP_APP_METADATA_CREATOR_STRING, 'Chixpy');
+  SDL_SetAppMetadataProperty(SDL_PROP_APP_METADATA_COPYRIGHT_STRING,
+    '(C) 2026 Chixpy');
+  SDL_SetAppMetadataProperty(SDL_PROP_APP_METADATA_URL_STRING,
+    'https://github.com/Chixpy');
+  SDL_SetAppMetadataProperty(SDL_PROP_APP_METADATA_TYPE_STRING, 'application');
+
+  SDLEng := cMainEng.Create(ChangeFileExt(ProgName, ''), IniName);
   try
+    // Create an initial config file
+    if not FileExists(IniName) then
+      SDLEng.Config.SaveToFile('', False);
     SDLEng.Run;
   finally
     SDLEng.Free;

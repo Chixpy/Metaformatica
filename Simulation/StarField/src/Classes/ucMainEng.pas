@@ -11,6 +11,9 @@ uses
   ucCHXSDL3Engine, uCHXSDL3TypeHelpers,
   uc3DStar;
 
+const
+  kNStars = 1000;
+
 type
 
   { cMainEng }
@@ -35,7 +38,6 @@ type
     DrawShapes, DrawTrails: Boolean;
 
     procedure InitStar(const aStar: c3DStar; const ResetZ: Boolean);
-
   end;
 
 implementation
@@ -48,7 +50,7 @@ var
 begin
   if not Assigned(aStar) then Exit;
 
-  SpaceSize := Window.RenderWidth * 2;
+  SpaceSize := Window.Width * 2;
 
   aStar.CurrPos.InitRandomXY(-SpaceSize, SpaceSize, -SpaceSize, SpaceSize);
   aStar.CurrPos.Z := SpaceSize;
@@ -57,7 +59,7 @@ begin
 
   aStar.PrevPos := aStar.CurrPos;
 
-  aStar.Radius := Random * Window.RenderWidth / 20;
+  aStar.Radius := Random * Window.Width / 20;
   aStar.Color.Init3D(Random, Random, Random);
 
   // Test one star:
@@ -75,7 +77,7 @@ begin
   //Window.SetRenderSize(200, 200, SDL_LOGICAL_PRESENTATION_LETTERBOX);
 
   StarList := c3DStarList.Create(True);
-  NStars := 200;
+  NStars := kNStars;
   for i := 1 to NStars do
   begin
     aStar := c3DStar.Create(0, 0, 0);
@@ -107,7 +109,7 @@ begin
   Render.Clear(0, 0, 0);
 
   StarList.DrawAll(Render, DrawShapes, DrawTrails,
-    Window.RenderWidth div 2, Window.RenderHeight div 2);
+    Window.Width div 2, Window.Height div 2, Window.Width);
 
   // Render.DebugTextF(2, 90, '(%f, %f, %f)',
   //   [StarList[0].CurrPos.X, StarList[0].CurrPos.Y, StarList[0].CurrPos.Z]);
@@ -146,18 +148,18 @@ begin
 
         SDLK_S: DrawShapes := not DrawShapes;
 
-        SDLK_UP: StarList.RotateAllZY(-0.02);
+        SDLK_UP: StarList.RotateAllZY(-0.03);
 
-        SDLK_DOWN: StarList.RotateAllZY(0.02);
+        SDLK_DOWN: StarList.RotateAllZY(0.03);
 
-        SDLK_LEFT: StarList.RotateAllXZ(-0.02);
+        SDLK_LEFT: StarList.RotateAllXZ(-0.03);
 
-        SDLK_RIGHT: StarList.RotateAllXZ(0.02);
+        SDLK_RIGHT: StarList.RotateAllXZ(0.03);
 
         SDLK_Q: Speed := Speed + 5;
 
         SDLK_A:
-          if Speed > 5 then Speed := Speed - 5;
+          if Speed >= 5 then Speed := Speed - 5;
 
       otherwise // of aEvent.key.key
         Handled := False;

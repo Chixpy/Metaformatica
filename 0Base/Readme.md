@@ -2,43 +2,67 @@
 
 ## Information
 
-
+<More detailed description>
 
 ## Compiling
 
-From main directory (where _build.sh_ and _build.bat_ are):
+From main directory (where `build.sh` and `Build.ba`_ are):
 
 ### Unix-like:
 
-> ./build.sh
+```
+./build.sh
+```
 
 ### Windows:
 
-Dbl-Click over _build.bat_ or in command line:
+Dbl-Click over `build.bat` or in command line:
 
-> build
+```
+build
+```
 
 On Windows, Free Pascal Compiler program is suposed to be in
 `PATH` enviroment variable and executable's folder must have _SDL3.dll_ (and
-other .dll if needed) and be sure that they are for the compiled
+other _.dll_ if needed) and be sure that they are for the compiled
 architecture (32/64bits).
 
 If Lazarus is used, maybe it's needed to add used units folders to the project.
 
-### Parameters and executable
+### Scripts, Parameters and Executable
 
-FPC parameters can be passed to add or override  _fp.cfg_ ones.
+Both script files simply do the following:
 
-Parameter `-dRELEASE` generates an optimized executable.
+1. Change to script directory.
+2. Create FPC output directories.
+3. Change to `{MainProg}.pas` directory.
+4. Run `fpc @fp.cfg {MainProg}.pas [OtherParameters]`
 
-Executable program will be created in _bin_ directory.
+So,
+
+- FPC parameters can be passed to scripts to add or override _fp.cfg_ ones.
+- Parameter `-dRELEASE` generates a smart linked, stripped and optimized
+  executable. By default, debug one will be created with debug info, error
+  checking fallback and `heaptrc` unit for memory leaks.
+
+Executable program will be created in `bin/` directory. As said in _Compiling_,
+it need _at least_ find `SDL3.{dll|o}`. In Windows it's not common to have it
+in a system folder, so it needs a copy of `SDL3.dll` in executable's folder.
+
+Furthermore, executable will change its current directory to the directory
+where it resides to search external files if needed (own _SDL3Engine_ config
+file for example).
 
 ## Usage
 
-  - **[F1]**: Shows help text inside of the program (if avaiable).
-  - **[F11]**: Toggle FPS info.
-  - **[F10]** / **[F12]**: Decrease / Increase FPS.
-  - **[ESC]**: Exit the program.
+By default some keys are assigned:
+
+- **[F1]**: Toggle help text inside of the program.
+- **[F11]**: Toggle FPS info.
+- **[F10]** / **[F12]**: Decrease / Increase FPS.
+- **[ESC]**: Exit the program.
+
+In this program:
 
 ## Sources and more information
 

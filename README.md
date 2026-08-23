@@ -1,6 +1,6 @@
-# Metaformatica
-Miscelaneous programs, simulations, algorithms and tests. Mainly in Free Pascal
-with cCHXSDL3Engine.
+# Metaformática
+Miscelaneous programs, simulations, algorithms and tests. Mainly with Free
+Pascal using `cCHXSDL3Engine`.
 
 ## About the repository
 
@@ -12,48 +12,57 @@ and other experiments.
 
 The basic directory structure of Metaformática is:
 
-- _README.md_: This text.
-- _LastChanges.md_: Last changes commited to the repository.
-- _CHANGELOG.md_: Full change log.
-- _0Base/_: Template program structure (to be copied).
-  - _README.md_: Information about the program.
-  - _bin/_: Final program directory.
-    - _[Architecture]/_: Actual executable directory (and dll).
-    - _[OtherFolderFiles]_: Whatever executable needs to run.
-  - _lib/_: Where compiler will put compilation files.
-  - _src/_: Source directory.
-    - _[MainProgram].pas_: Program(s) for compiling.
-    - _fpc.cfg_: FPC config file for easy compiling.
-    - _[Units/Classes]/_: Directories with units used by the program.
-  - _[res/man/doc]/_: Recurses/Manual/Documentation if exists.
-- _0Common/_: 
-  - _[Units/Classes]/_: Common units between programs but not in CHXPas.
-  - _CHXPas/_: CHXPas units, where cCHXSDL3Engine is.
-  - _SDL3/_: SDL3-for-Pascal submodule, used by cCHXSDL3Engine.
-- _[Category]/_ Actual programs directory, each in its own folder.
+- `CHANGELOG.md`: Full change log.
+- `LastChanges.md`: Last changes commited to the repository.
+- `NewProject.sh`: Script to create structure for a new program.
+- `README.md`: This text.
+- `0Base/`: Template structure for programs (to be copied with
+  `NewProject.sh`).
+  - `README.md`: Information about the program.
+  - `build.sh` and `Build.bat`: Created by `NewProject.sh`.
+  - `bin/`: Final program directory.
+    - `{Executable}`: Actual executable program (and dll).
+    - `{OtherFolderOrFiles}`: Whatever executable needs to run.
+  - `lib/`: Where compiler will put compilation files.
+  - `src/`: Source directory.
+    - `{MainProgram}.pas` Main program(s) for compiling.
+    - `fp.cfg`: FPC config file for easy compiling.
+    - `Units/`: Directory with non common units used by the program.
+  - `res/`, `man/`, `doc/`: Compilation recurses, User manual, Documentation,
+     &c; if exists.
+- `0Common/`: Submodules and common units.
+  - `Units/`: Common units between programs but not in _CHXPas_ or other
+    submodule.
+  - `CHXPas/`: _CHXPas_ repository as git submodule, where `cCHXSDL3Engine` 
+    actually is.
+  - `SDL3/`: SDL3-for-Pascal submodule, used by `cCHXSDL3Engine`.
+- `{Category}/{ProgramDir}/`: Actual programs directory, each in its own
+  folder.
 
-Maybe, someday, all of above is under _Pascal_ directory because programs in
-other languages are added (although surely I will try to port to Pascal).
+Maybe, someday, all of above is under `Pascal` directory because programs in
+other languages are added... (but surely I will try to port to Pascal).
 
 ### Compilation
 
-Every project have a _Build.sh/bat_ for easy compilation, but they only does
-in _src_ folder:
+Every project have a `Build.{sh|bat}` for easy compilation, but they only 
+changes to `src` folder and execute:
 
 ```
-fpc @fp.cfg [MainFile].pas
+fpc @fp.cfg {MainFile}.pas
 ```
 
-All fpc parameters are in _fp.cfg_.
+All FPC config parameters are in `fp.cfg`.
 
-Executable file will be created at _bin_ directory, and it must run from
+Executable file will be created at `bin` directory, and it must run from
 there.
 
-On Windows, _fpc_ compiler program is suposed to be in `PATH` enviroment
-variable and executable's folder must have _SDL3.dll_ (and other .dll if 
-needed) and be sure that they are for the _compiled_ architecture (32/64bits).
+On Windows, `fpc` compiler program is suposed to be in `PATH` enviroment
+variable and executable's folder must have `SDL3.dll` (and other _.dll_ if
+needed) and be sure that they are for the _compiled_ and system
+architecture (32/64bits).
 
-If Lazarus is used, maybe it's needed to add units folders to the project.
+If _Lazarus_ is used for compilation, maybe it's needed to add units folders
+manually to the project configuration.
 
 ## About `cCHXSDL3Engine`
 
@@ -64,23 +73,31 @@ differences are very little anyways:
     - `Compute` is intended for algorithm computation. With `ExitProg` variable
       can finish program execution by itself. Time spend inside it is
       monitorized by `cCHXSDLFPSManager`.
-    - `Draw` is for drawing. It's not called if the Window is minimized.
-    - `HandleEvent` is called once per Event ocurred between frames and some
-      of then are automatically handle by `cCHXSDL3Engine` components.
+    - `Draw` is for drawing of course. It's not called if the Window is
+      minimized.
+    - `HandleEvent` is called once per Event ocurred between frames. Some
+      of then are automatically handled by `cCHXSDL3Engine` or its components.
 - Order of the loop is `Compute`, `Draw` and `HandleEvent` while usually
-  _GameEngine_ pattern is handle events first, and then compute and draw.
+  _GameEngine_ pattern is to handle events first; and then compute and draw.
   In real time there is not difference at all.
 - Actually there are 2 other methods:
+  - `Setup` is called once before entering the main loop for setting initial
+    values, object creation, etc.
+  - `Finish` is called after exiting main loop for memory freeing or other
+    finalization stuff.
 
-Other classes are developed to help:
-- `cCHXSDLWindow` encapsulates `SDL_Window` and handles window events.
-- `cCHXSDLFrameManager` keeps framerate constant with interpolation and
-  stores some information related: `FrameCounter`, `LastFrameTime` and
-  `LastCompTime` (Last computation time).
-- `cCHXSDLRenderer` encapsulates `SDL_Renderer` and its functions, and
-  proporcionate more primitives to draw than vanilla SDL3 without *SDL_gfx*
-  library.
+Other classes and units are developed to help:
+
+- `cCHXSDLWindow` (`Window` property inside of the engine) encapsulates
+  `SDL_Window` and handles window events.
+- `cCHXSDLFrameManager` (`FPSMng` property) keeps framerate constant with
+  interpolation and stores some information related: `FrameCounter`,
+  `LastFrameTime` (Total frame time) and `LastCompTime` (Last computation
+  time).
+- `cCHXSDLRenderer` (`Render` property) encapsulates `SDL_Renderer` and
+  its primitive functions, and proporcionate more primitives to draw than
+  vanilla _SDL3_ without `SDL_gfx` library.
 - `cCHXSDLTypeHelpers` is a unit with helpers for SDL types, operator
-  overloads and some useful types.
+  overloads and some other useful types.
 
 The engine uses **SDL3-for-FreePascal** project headers.
