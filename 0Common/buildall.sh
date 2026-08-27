@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/bin/bash
+
+pushd "$(dirname "$0")" > /dev/null
 
 TMP_LOG=$(mktemp)
 CONTADOR=0
@@ -6,13 +8,13 @@ CONTADOR=0
 find . -type f -name "build.sh" | while read -r script_path; do
   echo ""
   echo ===================================
-  echo Ejecutando: %%f
+  echo Ejecutando: $script_path
   echo ===================================
 
   script_dir=$(dirname "$script_path")
 
   pushd "$script_dir" > /dev/null
-    sh "./$(basename "$script_path")"
+    bash "./$(basename "$script_path")"
     STATUS=$?
   popd > /dev/null
 
@@ -21,7 +23,7 @@ find . -type f -name "build.sh" | while read -r script_path; do
   fi
 done
 
-if [ ! -s "TMP_LOG"]; then
+if [ ! -s "TMP_LOG" ]; then
   echo "[OK] ¡Todo se compiló correctamente!"
 else
   CONTADOR=$(wc -l < "$TMP_LOG")
@@ -31,3 +33,5 @@ else
 fi
 
 rm -f "$TMP_LOG"
+
+popd > /dev/null

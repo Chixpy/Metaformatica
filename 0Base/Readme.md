@@ -27,20 +27,24 @@ On Windows, Free Pascal Compiler program is suposed to be in
 other _.dll_ if needed) and be sure that they are for the compiled
 architecture (32/64bits).
 
-If Lazarus is used, maybe it's needed to add used units folders to the project.
+If Lazarus is used, maybe it's needed to add manually used units folders to
+the project.
 
 ### Scripts, Parameters and Executable
 
 Both script files simply do the following:
 
 1. Change to script directory.
-2. Create FPC output directories.
+2. Create FPC output directories (defined in `fp.cfg`):
+  - `bin` for executable.
+  - `../../../0Common/lib` for libraries (`.o`, `.ppu`).
 3. Change to `{MainProg}.pas` directory.
-4. Run `fpc @fp.cfg {MainProg}.pas [OtherParameters]`
+4. Run `fpc @fp.cfg {MainProg}.pas [OtherParameters]`.
+5. Return to initial directory.
 
 So,
 
-- FPC parameters can be passed to scripts to add or override _fp.cfg_ ones.
+- FPC parameters can be passed to scripts to add or override `fp.cfg` ones.
 - Parameter `-dRELEASE` generates a smart linked, stripped and optimized
   executable. By default, debug one will be created with debug info, error
   checking fallback and `heaptrc` unit for memory leaks.
@@ -57,10 +61,10 @@ file for example).
 
 By default some keys are assigned:
 
+- **[ESC]**: Exit the program.
 - **[F1]**: Toggle help text inside of the program.
 - **[F11]**: Toggle FPS info.
 - **[F10]** / **[F12]**: Decrease / Increase FPS.
-- **[ESC]**: Exit the program.
 
 In this program:
 

@@ -69,7 +69,7 @@ cat <<EOF > "$BUILD_SH"
 pushd "\$(dirname "\$0")" > /dev/null
 
 mkdir -p bin
-mkdir -p lib
+mkdir -p ../../0Common/lib
 
 cd src
 fpc @fp.cfg ${PROYECTO}.pas \$@
@@ -84,14 +84,13 @@ chmod +x "$BUILD_SH"
 # Paso 6: Crear archivo por lotes para compilación
 BUILD_BAT="$TARGET_DIR/Build.bat"
 cat <<EOF > "$BUILD_BAT"
-#!/bin/bash
 @echo off
 setlocal enabledelayedexpansion
 chcp 65001 > nul
 
 pushd "%~dp0"
 mkdir bin > nul
-mkdir lib > nul
+mkdir ..\..\0Common\lib > nul
 
 cd src
 echo Compilando ${PROYECTO}...

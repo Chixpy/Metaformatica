@@ -118,7 +118,11 @@ begin
 end;
 
 procedure cMainEng.DrawHelp;
+var
+  CurrW, CurrH: Integer;
 begin
+  CurrW := Window.Width; CurrH := Window.Height;
+  Window.SetRenderSize(400, 400);
   Render.SetDrawColor(1, 0, 1, 1);
   Render.DebugText(0, 10, '[ESC]: Exit');
   Render.DebugText(0, 20, '[F1]: Toggle this help');
@@ -128,6 +132,7 @@ begin
   Render.DebugText(0, 60, '[ARROWS]: Change direction');
   Render.DebugText(0, 70, '[T]: Toggle trails');
   Render.DebugText(0, 80, '[S]: Toggle shapes');
+  Window.SetRenderSize(CurrW, CurrH);
 end;
 
 procedure cMainEng.HandleEvent(const aEvent : TSDL_Event;

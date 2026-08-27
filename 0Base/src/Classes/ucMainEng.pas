@@ -64,12 +64,18 @@ begin
 end;
 
 procedure cMainEng.DrawHelp;
+var
+  CurrW, CurrH: Integer;
 begin
+  CurrW := Window.Width; CurrH := Window.Height;
+  Window.SetRenderSize(400, 400);
   Render.SetDrawColor(1, 0, 1, 1);
   Render.DebugText(0, 10, '[ESC]: Exit');
   Render.DebugText(0, 20, '[F1]: Toggle this help');
   Render.DebugText(0, 30, '[F11]: Toggle FPS');
   Render.DebugText(0, 40, '[F10]/[F12]: Dec/Inc FPS');
+  
+  Window.SetRenderSize(CurrW, CurrH);
 end;
 
 procedure cMainEng.HandleEvent(const aEvent : TSDL_Event;

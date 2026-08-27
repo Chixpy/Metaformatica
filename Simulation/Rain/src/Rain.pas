@@ -8,6 +8,12 @@ program Rain;
 uses
   SysUtils, CTypes, SDL3, ucMainEng;
 
+const
+  // Values for first run and initial config file.
+  kWidth = 200;
+  kHeight = 200;
+  kScale = 4;
+
 var
   SDLEng: cMainEng;
   ProgName, IniName: String;
@@ -27,11 +33,17 @@ begin
     'https://github.com/Chixpy');
   SDL_SetAppMetadataProperty(SDL_PROP_APP_METADATA_TYPE_STRING, 'application');
 
-  SDLEng := cMainEng.Create(ChangeFileExt(ProgName, ''), IniName);
+  SDLEng := cMainEng.Create(ChangeFileExt(ProgName, ''), IniName, False);
   try
     // Create an initial config file
     if not FileExists(IniName) then
+    begin
+      SDLEng.Config.Width := kWidth;
+      SDLEng.Config.Height := kHeight;
+      SDLEng.Config.Scale := kScale;
       SDLEng.Config.SaveToFile('', False);
+    end;
+    SDLEng.Init;
     SDLEng.Run;
   finally
     SDLEng.Free;

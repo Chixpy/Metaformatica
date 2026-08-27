@@ -3,7 +3,7 @@
 pushd "$(dirname "$0")" > /dev/null
 
 mkdir -p bin
-mkdir -p lib
+mkdir -p ../../0Common/lib
 
 cd src
 fpc @fp.cfg Rain.pas $@
