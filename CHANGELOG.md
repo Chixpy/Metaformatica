@@ -1,3 +1,12 @@
+## 2026-08-30 19:31
+
+- **Simulation/Starfield**: Removing stars that hides others, better trail
+  management.
+- **Simulation/Rain**: Reworked and added 3D wind.
+- Added **Simulation/Fireworks**.
+- Some fixes in some `Readme.md`.
+- Fixed creation of the ini file for the programs.
+
 ## 2026-08-27 23:01
 
 - Fixed `buildall.sh` and call `build.sh` with `bash` instead `sh`. So,

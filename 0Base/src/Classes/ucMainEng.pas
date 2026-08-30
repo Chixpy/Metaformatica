@@ -5,7 +5,7 @@ unit ucMainEng;
 
   (c) 2026 Chixpy https://github.com/Chixpy
 }
-{$mode ObjFPC}{$H+}{$inline ON}
+{$mode ObjFPC}{$H+}{$inline ON}{$WARN 6058 OFF}
 interface
 uses
   SysUtils, Math, CTypes,

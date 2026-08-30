@@ -6,7 +6,7 @@ mkdir -p bin
 mkdir -p ../../0Common/lib
 
 cd src
-fpc @fpMeta.cfg Rain.pas $@
+fpc @fpMeta.cfg Fireworks.pas $@
 ERRCOMP=$?
 
 popd > /dev/null

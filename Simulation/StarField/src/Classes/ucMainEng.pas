@@ -3,7 +3,7 @@ unit ucMainEng;
 
   (c) 2026 Chixpy https://github.com/Chixpy
 }
-{$mode ObjFPC}{$H+}{$inline ON}
+{$mode ObjFPC}{$H+}{$inline ON}{$WARN 6058 OFF}
 interface
 uses
   SysUtils, Math, CTypes,
@@ -12,7 +12,7 @@ uses
   uc3DStar;
 
 const
-  kNStars = 1000;
+  kNStars = 100;
 
 type
 
@@ -31,7 +31,7 @@ type
       var ExitProg : Boolean); override; { It's virtual. }
 
   public
-    StarList: c3DStarList;
+    StarList, VisibleStars: c3DStarList;
     NStars: Integer;
     Speed: CFloat;
 
@@ -46,20 +46,21 @@ implementation
 
 procedure cMainEng.InitStar(const aStar: c3DStar; const ResetZ: Boolean);
 var
-  SpaceSize: CFloat;
+  SpaceDeep: CFloat;
 begin
   if not Assigned(aStar) then Exit;
 
-  SpaceSize := Window.Width * 2;
+  SpaceDeep := Window.Width * 2;
 
-  aStar.CurrPos.InitRandomXY(-SpaceSize, SpaceSize, -SpaceSize, SpaceSize);
-  aStar.CurrPos.Z := SpaceSize;
+  aStar.CurrPos.InitRandomXY(-SpaceDeep, SpaceDeep, -SpaceDeep, SpaceDeep);
   if not ResetZ then
-    aStar.CurrPos.Z := Random * aStar.CurrPos.Z;
+    aStar.CurrPos.Z := (Random * SpaceDeep) + (SpaceDeep * 0.5)
+  else
+    aStar.CurrPos.Z := SpaceDeep * 1.5;
 
   aStar.PrevPos := aStar.CurrPos;
 
-  aStar.Radius := Random * Window.Width / 20;
+  aStar.Radius := Random * Window.Width / 20 + 1;
   aStar.Color.Init3D(Random, Random, Random);
 
   // Test one star:
@@ -77,42 +78,111 @@ begin
   //Window.SetRenderSize(200, 200, SDL_LOGICAL_PRESENTATION_LETTERBOX);
 
   StarList := c3DStarList.Create(True);
+  StarList.Capacity := kNStars;
   NStars := kNStars;
   for i := 1 to NStars do
   begin
-    aStar := c3DStar.Create(0, 0, 0);
+    aStar := c3DStar.Create;
     InitStar(aStar, False);
     StarList.Add(aStar);
   end;
 
-  Speed := 0;
-  DrawShapes := False; DrawTrails := False;
+  VisibleStars := c3DStarList.Create(False);
+
+  Speed := 0; DrawShapes := False; DrawTrails := False;
 end;
 
 procedure cMainEng.Finish;
 begin
+  VisibleStars.Free;
   StarList.Free; // Free all stars too
 end;
 
 procedure cMainEng.Compute(var ExitProg : Boolean);
 var
-  aStar: c3DStar;
+  Star1, Star2: c3DStar;
+  StarPos, aPos: Integer;
+  Distances: Array of CFloat;
+  StarDst: CFloat;
 begin
-  StarList.UpdateAll(Speed);
+  StarList.UpdateAll(Speed, Window.Width div 2, Window.Height div 2,
+    Window.Width);
 
-  for aStar in StarList do
-    if aStar.CurrPos.Z <= 0 then InitStar(aStar, True);
+  // All of this can be in a Starfield manager.
+
+  VisibleStars.Clear;
+  VisibleStars.Capacity := StarList.Count;
+  for Star1 in StarList do
+  begin
+
+    // Maybe we don't want reset stars until they past much more the camera.
+    // Doing big rotations will show that they disappear.
+    if Star1.PrevPos.Z <= 0 then InitStar(Star1, True);
+
+    if DrawShapes then
+    begin
+      // Sorting stars by distance and removing hidden ones.
+      StarPos := 0;
+      SetLength(Distances, 0); // Clears the array (?)
+      SetLength(Distances, StarList.Count);
+      StarDst := Star1.CurrPos.GetSqrMag3D;
+      while (StarPos >= 0) and (StarPos < VisibleStars.Count) do
+      begin
+        // Testing if Star1 is hidded by current
+        if (Distances[StarPos] <  StarDst) then
+        begin
+          Star2 := VisibleStars[StarPos];
+          // `Z` stores the projection radius
+          if Star1.CurrProj.InDistanceXY(Star2.CurrProj,
+            Star1.CurrProj.Z - Star2.CurrProj.Z, True) then
+          begin
+            // Star2 hides Star1
+            StarPos := -1;
+          end
+          else // Continue
+            Inc(StarPos);
+        end
+
+        else // Test if next stars in the list are hidden by this one.
+
+        begin
+          aPos := StarPos;
+          while (aPos < VisibleStars.Count) do
+          begin
+            Star2 := VisibleStars[aPos];
+            if Star1.CurrProj.InDistanceXY(Star2.CurrProj,
+              Star1.CurrProj.Z - Star2.CurrProj.Z, True) then
+            begin
+              // Star1 hides Star 2
+              Delete(Distances, aPos, 1);
+              VisibleStars.Delete(aPos);
+            end
+            else
+              Inc(aPos);
+          end;
+        end;
+      end;
+
+      if StarPos >= 0 then
+      begin
+        Insert(StarDst, Distances, StarPos);
+        VisibleStars.Insert(StarPos, Star1);
+      end;
+      // else susbtract 1 in VisibleStars.Capacity and Distances length.
+      // but its not needed.
+    end
+    else // if not drawing shapes
+    begin
+      VisibleStars.Add(Star1);
+    end;
+  end;
 end;
 
 procedure cMainEng.Draw;
 begin
   Render.Clear(0, 0, 0);
 
-  StarList.DrawAll(Render, DrawShapes, DrawTrails,
-    Window.Width div 2, Window.Height div 2, Window.Width);
-
-  // Render.DebugTextF(2, 90, '(%f, %f, %f)',
-  //   [StarList[0].CurrPos.X, StarList[0].CurrPos.Y, StarList[0].CurrPos.Z]);
+  VisibleStars.DrawAll(Render, DrawShapes, DrawTrails);
 
   if ShowHelp then DrawHelp;
 end;
@@ -147,6 +217,7 @@ begin
       Handled := True;
       case aEvent.key.key of
         // SDLK_ESC, SDLK_F10, SDLK_F11, SDLK_F12: Managed by cCHXSDL3Engine.
+
         SDLK_F1: ShowHelp := not ShowHelp;
 
         SDLK_T: DrawTrails := not DrawTrails;
@@ -161,10 +232,13 @@ begin
 
         SDLK_RIGHT: StarList.RotateAllXZ(0.03);
 
-        SDLK_Q: Speed := Speed + 5;
+        SDLK_Q: Speed := Speed + 1;
 
         SDLK_A:
-          if Speed >= 5 then Speed := Speed - 5;
+          if Speed >= 1 then
+            Speed := Speed - 1
+          else
+            Speed := 0;
 
       otherwise // of aEvent.key.key
         Handled := False;

@@ -1,10 +1,10 @@
-program Rain;
+program Fireworks;
 {<
   See Readme.md
 
   (c) 2026 Chixpy https://github.com/Chixpy
 }
-{$mode ObjFPC}{$H+}{$inline ON}{$WARN 6058 OFF}
+{$mode ObjFPC}{$H+}
 uses
   SysUtils, CTypes, SDL3, ucMainEng;
 

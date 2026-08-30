@@ -1,6 +1,6 @@
-- Fixed `buildall.sh` and call `build.sh` with `bash` instead `sh`. So,
-  `pushd` and `popd` works as spected.
-- Changed `lib` output directory of the programs to `0Common/lib`,
-  so many shared units don't be need to be recompiled fro every program.
-- Added change in Logical Presentation when help is shown.
-- Programs will create an initial config file on first run.
+- **Simulation/Starfield**: Removing stars that hides others, better trail
+  management.
+- **Simulation/Rain**: Reworked and added 3D wind.
+- Added **Simulation/Fireworks**.
+- Some fixes in some `Readme.md`.
+- Fixed creation of the ini file for the programs.

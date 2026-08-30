@@ -5,7 +5,7 @@ unit ucDrop;
 
   (c) 2026 Chixpy https://github.com/Chixpy
 }
-{$mode ObjFPC}{$H+}{$inline ON}
+{$mode ObjFPC}{$H+}{$inline ON}{$WARN 6058 OFF}
 interface
 uses
   SysUtils, Generics.Collections, Math, CTypes,
@@ -23,29 +23,33 @@ type
     - Mass, Position, Velocity, Acceleration, Force
     - procedure AddForce(aForce : TCHXVec3Type); Adds force / mass
     - procedure Update; Calculate new position and velocity, resets Force and
-        Acceleration to 0.
+        Acceleration.
   }
   public
-    CurrProjX, CurrProjY: CFloat;
-    //< Last projection position and radius.
+
+    Proj: TCHXVec3S;
+    //< Last projection position on screen. `Z` is projected length
     Len: CFloat;
     //< Length of the drop
+
+    Splash: Boolean;
 
     constructor Create(const X, Y, Z, aLen: CFloat);
 
     procedure Init(const X, Y, Z, aLen: CFloat);
 
-    procedure Draw(const Render: cCHXSDL3Renderer;
-      const OffsetX, OffsetY, FloorY, FocLen: CFloat);
+    procedure Update(const OffsetX, OffsetY, FloorY, FocLen: CFloat);
+
+    procedure Draw(const Render: cCHXSDL3Renderer);
 
     destructor Destroy; override;
   end;
 
   cDropGenList = specialize TObjectList<cDrop>;
   cDropList = class (cDropGenList)
-    procedure UpdateAll(const Gravity, Wind: TCHXVec3S);
-    procedure DrawAll(const Render: cCHXSDL3Renderer;
+    procedure UpdateAll(const Gravity, Wind: TCHXVec3S;
       const OffsetX, OffsetY, FloorY, FocLen: CFloat);
+    procedure DrawAll(const Render: cCHXSDL3Renderer);
   end;
 
 implementation
@@ -63,40 +67,46 @@ procedure cDrop.Init(const X, Y, Z, aLen: CFloat);
 begin
   Position.Init3D(X, Y, Z);
   Velocity.Init3D(0, 0, 0);
-  CurrProjX := X;
-  CurrProjY := Y;
+  Proj.Init3D(0, 0, 0);
   Len := aLen;
+  Splash := False;
 end;
 
-procedure cDrop.Draw(const Render: cCHXSDL3Renderer;
-  const OffsetX, OffsetY, FloorY, FocLen: CFloat);
+procedure cDrop.Update(const OffsetX, OffsetY, FloorY, FocLen: CFloat);
 var
-  FOVCons, ProjLen: CFloat;
+  FOVCons: CFloat;
 begin
-  if IsZero(Position.Z) then Exit;
+  ApplyForce;
+
+  // Div by zero and clipping plane
+  if Position.Z < 0.1 then
+  begin
+    Proj.Init3D(0, 0, 0);
+    Exit;
+  end;
 
   FOVCons := FocLen / Position.Z;
-  CurrProjX := Position.X * FOVCons + OffsetX;
-  ProjLen := Min(Len, (Position.Y - FloorY)) * FOVCons;
+  Proj.X := Position.X * FOVCons + OffsetX;
+  Proj.Y := -Position.Y * FOVCons + OffsetY;
 
-  Render.SetDrawColor(0.2, 0.2, 1, 0.3);
-  if Position.Y  <= FloorY then
-  begin
-    CurrProjY := -FloorY * FOVCons + OffsetY;
-    try
-      Render.EllipseFilled(CurrProjX, CurrProjY, ProjLen * 0.5, ProjLen * 0.20);
-    except
-      WriteLn(Format('Position: %g, %g, %g',
-        [Position.X, Position.Y, Position.Z]));
-      WriteLn(Format('Projection: %g, %g (%g)',
-        [CurrProjX, CurrProjY, ProjLen * 0.5]));
-    end;
-  end
+  if Position.Y > FloorY then
+    Proj.Z := Min(Len, (Position.Y - FloorY)) * FOVCons
   else
   begin
-    CurrProjY := -Position.Y * FOVCons + OffsetY;
-    Render.Line(CurrProjX, CurrProjY - ProjLen, CurrProjX, CurrProjY);
-  end;
+    Proj.Z := Len * FOVCons;
+    Splash := True;
+  end
+end;
+
+procedure cDrop.Draw(const Render: cCHXSDL3Renderer);
+begin
+  if IsZero(Proj.Z) then Exit;
+
+  Render.SetDrawColor(0, 0, 1, 0.3);
+  if not Splash then
+    Render.Line(Proj.X, Proj.Y - Proj.Z, Proj.X, Proj.Y)
+  else
+    Render.EllipseFilled(Proj.X, Proj.Y, Proj.Z * 0.5, Proj.Z * 0.2);
 end;
 
 destructor cDrop.Destroy;
@@ -106,28 +116,27 @@ end;
 
 { cDropList }
 
-procedure cDropList.UpdateAll(const Gravity, Wind: TCHXVec3S);
+procedure cDropList.UpdateAll(const Gravity, Wind: TCHXVec3S;
+ const OffsetX, OffsetY, FloorY, FocLen: CFloat);
 var
   aDrop: cDrop;
-  Force: TCHXVec3S;
 begin
-  Force := Gravity + Wind;
   for aDrop in Self  do
   begin
-    aDrop.AddForce(Force);
-    aDrop.Update;
+    // Gravity is an acceleration
+    aDrop.Acceleration += Gravity;
+    // Wind is a force
+    aDrop.AddForce(Wind);
+    aDrop.Update(OffsetX, OffsetY, FloorY, FocLen);
   end;
 end;
 
-procedure cDropList.DrawAll(const Render: cCHXSDL3Renderer;
-  const OffsetX, OffsetY, FloorY, FocLen: CFloat);
+procedure cDropList.DrawAll(const Render: cCHXSDL3Renderer);
 var
   aDrop: cDrop;
 begin
   for aDrop in Self do
-  begin
-    aDrop.Draw(Render, OffsetX, OffsetY, FloorY, FocLen);
-  end;
+    aDrop.Draw(Render);
 end;
 
 end.

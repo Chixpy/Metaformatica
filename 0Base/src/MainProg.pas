@@ -3,7 +3,7 @@
 
   (c) 2026 Chixpy https://github.com/Chixpy
 }
-{$mode ObjFPC}{$H+}
+{$mode ObjFPC}{$H+}{$inline ON}{$WARN 6058 OFF}
 uses
   SysUtils, CTypes, SDL3, ucMainEng;
 
@@ -40,7 +40,7 @@ begin
       SDLEng.Config.Width := kWidth;
       SDLEng.Config.Height := kHeight;
       SDLEng.Config.Scale := kScale;
-      SDLEng.Config.SaveToFile('', False);
+      SDLEng.Config.SaveToFile(IniName, False);
     end;
     SDLEng.Init;
     SDLEng.Run;

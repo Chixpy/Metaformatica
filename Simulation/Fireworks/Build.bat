@@ -7,8 +7,8 @@ mkdir bin > nul
 mkdir ..\..\0Common\lib > nul
 
 cd src
-echo Compilando Rain...
-fpc @fpMeta.cfg Rain.pas %*
+echo Compilando Fireworks...
+fpc @fpMeta.cfg Fireworks.pas %*
 set "ERRCOMP=!ERRORLEVEL!"
 
 popd

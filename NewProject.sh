@@ -72,7 +72,7 @@ mkdir -p bin
 mkdir -p ../../0Common/lib
 
 cd src
-fpc @fp.cfg ${PROYECTO}.pas \$@
+fpc @fpMeta.cfg ${PROYECTO}.pas \$@
 ERRCOMP=\$?
 
 popd > /dev/null
@@ -94,7 +94,7 @@ mkdir ..\..\0Common\lib > nul
 
 cd src
 echo Compilando ${PROYECTO}...
-fpc @fp.cfg ${PROYECTO}.pas %*
+fpc @fpMeta.cfg ${PROYECTO}.pas %*
 set "ERRCOMP=!ERRORLEVEL!"
 
 popd

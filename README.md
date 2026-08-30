@@ -45,13 +45,15 @@ other languages are added... (but surely I will try to port to Pascal).
 ### Compilation
 
 Every project have a `Build.{sh|bat}` for easy compilation, but they only 
-changes to `src` folder and execute:
+creates output dirs, changes to `src` folder and execute:
 
 ```
-fpc @fp.cfg {MainFile}.pas
+fpc @fpMeta.cfg {MainFile}.pas
 ```
 
-All FPC config parameters are in `fp.cfg`.
+`fpMeta.cfg` sets directories for searching units and include files. FPC
+parameters can be added to `build.sh` too, and `-dRELEASE` parameter creates
+an optimized and striped executable.
 
 Executable file will be created at `bin` directory, and it must run from
 there.

@@ -43,19 +43,20 @@ After this, don't forgive to translate (0,0) to the center of the screen.
 Some improved variants can be implemented (only some are done), all of
 them add more complexity and computations to the base algorithm:
 
-- **Velocity**: Changing the velocity of camera is the easiest one. If we
+- [x] **Velocity**: Changing the velocity of camera is the easiest one. If we
   remove not visible _stars_, a going backwards algorithm must be adapted. Or
   simply don't let going backwards.
-- **Change direction**: Changing Camera position vertically or horizontally
+- [x] **Change direction**: Changing Camera position vertically or horizontally
   (by shifting all _stars_), althought physically possible, maybe is not
   satisfactory because it's expected to rotate (and then rotate al _stars_).
-- **Star movement**: _Stars_ can have movement by themselves, as in reallity.
-- **Colors**: Obvious, to add variety to the stars.
+- [ ] **Star movement**: _Stars_ can have movement by themselves, as in
+  reallity. But may be it not noticeable.
+- [x] **Colors**: Obvious, to add variety to the stars.
   - No Doppler effect involved. It will be cumbersome.
   - If a _star_ overlaps other in same screen coordinates... teorically, We
     need to know who is closest to the camera. With no-size points it can be
     ignored as they are small it only will last few frames.
-- **Size** (and shape): Define a size of the _stars_ and shape, usually a
+- [x] **Size** (and shape): Define a size of the _stars_ and shape, usually a
   circle but it can be anything, a geometric star or a cow^2.
   - Giving a size means that _stars_ grow as we aproach them. Overlaping and
     hidding will be more common. For a correct representation, sorting  _stars_
@@ -66,7 +67,7 @@ them add more complexity and computations to the base algorithm:
     - Giving another shape, searching totally hidded _stars_ can be complex.
   - Testing for _stars_ out of screen must be done with projected shape as a
     whole.
-- **Trails**: Adding trails increases speed sensation.
+- [-] **Trails**: Adding trails increases speed sensation.
   - Initially it is easy, with simple points we can keep previous position and
     draw a line from it to current position.
     - Alpha for the can be used, ideally gradient, having same quirks as
@@ -83,7 +84,7 @@ them add more complexity and computations to the base algorithm:
 
 ## Compiling
 
-From main directory (where `build.sh` and `Build.ba`_ are):
+From main directory (where `build.sh` and `Build.bat` are):
 
 ### Unix-like:
 
@@ -93,7 +94,7 @@ From main directory (where `build.sh` and `Build.ba`_ are):
 
 ### Windows:
 
-Dbl-Click over `build.bat` or in command line:
+Dbl-Click over `Build.bat` or in command line:
 
 ```
 build
@@ -113,7 +114,7 @@ Both script files simply do the following:
 1. Change to script directory.
 2. Create FPC output directories.
 3. Change to `{MainProg}.pas` directory.
-4. Run `fpc @fp.cfg {MainProg}.pas [OtherParameters]`
+4. Run `fpc @fpMeta.cfg {MainProg}.pas [OtherParameters]`
 
 So,
 
@@ -144,7 +145,7 @@ In this program:
 - **[Q]** / **[A]**: Increase / Decrease speed.
 - **[S]**: Toggle Shape / Point drawing.
 - **[T]**: Toggle Trails drawing.
-- **Arrows**: 
+- **Arrows**: Turn direction.
 
 ## Sources and more information
 

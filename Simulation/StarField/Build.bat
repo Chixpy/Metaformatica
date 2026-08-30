@@ -8,7 +8,7 @@ mkdir ..\..\0Common\lib > nul
 
 cd src
 echo Compilando StarField...
-fpc @fp.cfg StarField.pas %*
+fpc @fpMeta.cfg StarField.pas %*
 set "ERRCOMP=!ERRORLEVEL!"
 
 popd

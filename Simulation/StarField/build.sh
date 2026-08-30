@@ -6,7 +6,7 @@ mkdir -p bin
 mkdir -p ../../0Common/lib
 
 cd src
-fpc @fp.cfg StarField.pas $@
+fpc @fpMeta.cfg StarField.pas $@
 ERRCOMP=$?
 
 popd > /dev/null

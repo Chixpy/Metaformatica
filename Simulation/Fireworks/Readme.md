@@ -1,12 +1,31 @@
-<Little description>
+# Fireworks
+
+Simulation of fireworks.
 
 ## Information
 
-<More detailed description>
+This program simulates launching fireworks and their explosion in sparks.
+
+Its simulation involves some physics and use of particles. A _rocket_ (or a cow)
+is launched and then explodes, launching multiple sparks (or spreading
+milk) in random directions and fade until disappear.
+
+They are represented in 3D and the camera be moved around the center.
+But there are not reference points, so can be confusing.
+
+### Ideas and improvements
+
+  - [ ] Better interactivity, and less hooks to Window size, distance and
+    gravity values:
+    - Change distance of the camera.
+    - Change initial velocity.
+    - Change gravity.
+  - [ ] Automatic and temporized launch.
+  - [ ] Sound. LOL.
 
 ## Compiling
 
-From main directory (where `build.sh` and `Build.bat` are):
+From main directory (where `build.sh` and `Build.bat`_ are):
 
 ### Unix-like:
 
@@ -16,7 +35,7 @@ From main directory (where `build.sh` and `Build.bat` are):
 
 ### Windows:
 
-Dbl-Click over `Build.bat` or in command line:
+Dbl-Click over `build.bat` or in command line:
 
 ```
 build
@@ -59,7 +78,7 @@ file for example).
 
 ## Usage
 
-By default some keys are assigned:
+By default some keys are assigned by _SDL3Engine_:
 
 - **[ESC]**: Exit the program.
 - **[F1]**: Toggle help text inside of the program.
@@ -68,5 +87,13 @@ By default some keys are assigned:
 
 In this program:
 
+- **[SPACE]**: Launch a Firework.
+- **[ARROWS]**: Change camera angle. Maybe is a little confusing...
+
 ## Sources and more information
 
+- The Coding Train Challenge #027 and #28?- Fireworks (2D and 3D)
+  by Daniel Shiffman.
+  - http://codingtra.in - http://patreon.com/codingtrain
+  - Video of CTC #027: https://youtu.be/CKeyIbT3vXI
+  - Video of CTC #028: 

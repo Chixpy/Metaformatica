@@ -1,6 +1,6 @@
 # Rain
 
-Program that simulates rain.
+A little simulation of rain.
 
 ## Information
 
@@ -51,7 +51,7 @@ Some ideas, not sure if they are noticeable unless gravity is very small:
 
 ## Compiling
 
-From main directory (where `build.sh` and `Build.ba`_ are):
+From main directory (where `build.sh` and `Build.bat` are):
 
 ### Unix-like:
 
@@ -61,7 +61,7 @@ From main directory (where `build.sh` and `Build.ba`_ are):
 
 ### Windows:
 
-Dbl-Click over `build.bat` or in command line:
+Dbl-Click over `Build.bat` or in command line:
 
 ```
 build
@@ -81,7 +81,7 @@ Both script files simply do the following:
 1. Change to script directory.
 2. Create FPC output directories.
 3. Change to `{MainProg}.pas` directory.
-4. Run `fpc @fp.cfg {MainProg}.pas [OtherParameters]`
+4. Run `fpc @fpMeta.cfg {MainProg}.pas [OtherParameters]`
 
 So,
 
@@ -106,6 +106,8 @@ By default some keys are assigned:
 - **[F11]**: Toggle FPS info.
 - **[F10]** / **[F12]**: Decrease / Increase FPS.
 - **[ESC]**: Exit the program.
+- **[UP]/[DOWN]**: Dec/Inc Gravity.
+- **[LEFT]/[RIGHT]**: Rotate Wind.
 
 In this program:
 
