@@ -158,7 +158,7 @@ begin
 end;
 
 procedure cMainEng.HandleEvent(const aEvent : TSDL_Event;
-var Handled : Boolean; var ExitProg : Boolean);
+  var Handled : Boolean; var ExitProg : Boolean);
 begin
   inherited;
   if ExitProg or Handled then Exit;

@@ -1,4 +1,4 @@
-program Fireworks;
+program Snake;
 {<
   See Readme.md
 

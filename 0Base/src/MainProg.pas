@@ -9,9 +9,11 @@ uses
 
 const
   // Values for first run and initial config file.
-  kWidth = 200;
   kHeight = 200;
-  kScale = 4;
+  kWidth = kHeight * 4 div 3;
+  kScale = 900 div kHeight;
+  kFullScreen = False;
+  kRender = '';
 
 var
   SDLEng: cMainEng;
@@ -34,16 +36,27 @@ begin
 
   SDLEng := cMainEng.Create(ChangeFileExt(ProgName, ''), IniName, False);
   try
-    // Create an initial config file
+    // Create an initial config
     if not FileExists(IniName) then
     begin
       SDLEng.Config.Width := kWidth;
       SDLEng.Config.Height := kHeight;
       SDLEng.Config.Scale := kScale;
-      SDLEng.Config.SaveToFile(IniName, False);
+      SDLEng.Config.FullScreen := kFullScreen;
+      SDLEng.Config.Render := kRender;
     end;
+
     SDLEng.Init;
     SDLEng.Run;
+
+    // Create the config file
+    if not FileExists(IniName) then
+    begin
+      if SDLEng.Config.Render = '' then
+        SDLEng.Config.Render := SDLEng.Window.GetSupportedRenderers;
+
+      SDLEng.Config.SaveToFile(IniName, False);
+    end;
   finally
     SDLEng.Free;
   end;

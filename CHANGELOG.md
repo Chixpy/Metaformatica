@@ -1,3 +1,8 @@
+## 2026-09-08 15:54
+
+- Added `Videogame/Snake`.
+- Adapting other projects to _CHXSDL3Engine_ changes.
+
 ## 2026-08-30 19:31
 
 - **Simulation/Starfield**: Removing stars that hides others, better trail
